@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8"/>
+<title>Front Office · Kúpele Bardejov — Pitch Deck</title>
+<meta name="viewport" content="width=1920, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F1F4D; --navy-2:#061230; --blue:#2E5BFF; --blue-2:#4D74FF;
+    --blue-soft:#DCE5FF; --cyan:#5DD3E8; --cyan-soft:#D9F4FA;
+    --light-blue:#8AB0FF;
+    --ink-1:#0A1126; --ink-2:#313752; --ink-3:#5C6481; --ink-4:#8B92AC;
+    --line:#E1E4EE; --bg:#F5F7FB;
+    --ok:#2FA76E; --warn:#E8930B; --bad:#DA3B33; --plum:#7857C7;
+    --font-head:'Plus Jakarta Sans',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+  }
+  html,body{ margin:0; padding:0; background:#0A1126; font-family:var(--font-body); color:var(--ink-1); }
+  deck-stage{ display:block; }
+  deck-stage > section{
+    width:1920px; height:1080px; background:#fff;
+    position:relative; overflow:hidden;
+    box-sizing:border-box;
+  }
+  /* Common */
+  .slide{ width:100%; height:100%; position:absolute; inset:0; padding:80px 110px; box-sizing:border-box; }
+  .slide.dark{ background: linear-gradient(160deg,#0F1F4D 0%,#061230 100%); color:#fff; }
+  .slide.dark *{ color:#fff; }
+  .slide.dark .muted{ color:rgba(255,255,255,0.7); }
+
+  h1,h2,h3,h4{ font-family:var(--font-head); margin:0; font-weight:800; letter-spacing:-0.025em; line-height:1.05; }
+  h1{ font-size:128px; }
+  h2{ font-size:84px; }
+  h3{ font-size:48px; font-weight:700; }
+  h4{ font-size:24px; font-weight:700; }
+  .display{ font-size:160px; line-height:.95; letter-spacing:-0.04em; font-weight:800; }
+  .eyebrow{ font-size:18px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:var(--blue); }
+  .lead{ font-size:28px; line-height:1.4; color:var(--ink-2); max-width:1100px; }
+  .muted{ color:var(--ink-3); }
+  .num{ font-variant-numeric:tabular-nums; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+
+  /* Overlapping circle pattern (FPT brand) */
+  .circles{ position:absolute; pointer-events:none; opacity:0.08; }
+  .slide.dark .circles{ opacity:0.13; }
+
+  /* Footer / chrome */
+  .chrome{
+    position:absolute; bottom:42px; left:110px; right:110px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:18px; color:var(--ink-3); letter-spacing:0.02em;
+  }
+  .slide.dark .chrome{ color:rgba(255,255,255,0.7); }
+  .chrome .brand{ display:flex; align-items:center; gap:14px; font-weight:600; }
+  .chrome .mark{
+    width:40px;height:40px;border-radius:8px;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-head);font-weight:800;font-size:18px;letter-spacing:-0.04em;
+  }
+  .slide.dark .chrome .mark{ background:#fff;color:var(--navy); }
+  .chrome .pn{ font-family:var(--font-head); font-weight:700; font-size:20px; color:var(--ink-1); }
+  .slide.dark .chrome .pn{ color:#fff; }
+
+  /* Top eyebrow strip */
+  .topbar{ position:absolute; top:48px; left:110px; right:110px; display:flex; justify-content:space-between; align-items:center; }
+  .topbar .tag{ font-size:18px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; color:var(--blue); }
+  .slide.dark .topbar .tag{ color:var(--cyan); }
+  .topbar .sn{ font-size:16px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-4); font-weight:600; }
+
+  /* Pills */
+  .pill{ display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:99px;
+    background:var(--bg); color:var(--ink-2); font-size:15px; font-weight:600; }
+  .pill.outline{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(10,17,38,0.15); }
+  .pill.navy{ background:var(--navy); color:#fff; }
+  .pill.cyan{ background:var(--cyan-soft); color:#0E3640; }
+  .pill.blue{ background:var(--blue); color:#fff; }
+  .pill.bad{ background:#FBE2DF; color:#7A1F1A; }
+  .pill.ok{ background:#DDF1E7; color:#1F6A47; }
+  .pill.warn{ background:#FBE8C9; color:#7A4B07; }
+  .slide.dark .pill.outline{ box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25); color:#fff; }
+  .slide.dark .pill{ background:rgba(255,255,255,0.10); color:#fff; }
+
+  /* Cards */
+  .card{ background:#fff; border-radius:18px; padding:30px; border:1px solid var(--line); box-shadow:0 4px 18px rgba(10,17,38,0.04); }
+  .card.dark{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.10); }
+  .card.cyan{ background:var(--cyan-soft); border:1px solid var(--cyan); }
+
+  /* Lists */
+  .bullets{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:22px; }
+  .bullets li{ font-size:24px; line-height:1.3; color:var(--ink-2); padding-left:32px; position:relative; }
+  .bullets li::before{ content:''; position:absolute; left:0; top:11px; width:10px; height:10px; border-radius:99px; background:var(--blue); }
+  .bullets.bad li::before{ background:var(--bad); }
+  .bullets.ok li::before{ background:var(--ok); }
+  .bullets.cyan li::before{ background:var(--cyan); }
+
+  .stat-block{ display:flex; flex-direction:column; gap:6px; }
+  .stat-block .v{ font-family:var(--font-head); font-weight:800; font-size:96px; letter-spacing:-0.04em; line-height:1; }
+  .stat-block .l{ font-size:18px; color:var(--ink-3); font-weight:600; }
+
+  .row{ display:flex; }
+  .col{ display:flex; flex-direction:column; }
+  .gap-12{ gap:12px; } .gap-16{ gap:16px; } .gap-20{ gap:20px; }
+  .gap-24{ gap:24px; } .gap-32{ gap:32px; } .gap-40{ gap:40px; } .gap-60{ gap:60px; }
+  .grow{ flex:1; }
+
+  /* Slide-specific styles */
+  .hero-display{
+    font-family:var(--font-head); font-weight:800; font-size:180px;
+    letter-spacing:-0.05em; line-height:0.95;
+  }
+  .hero-display .a{ color:var(--blue); }
+  .hero-display .b{ color:var(--cyan); }
+
+  .kpi-tile{
+    background:#fff; border-radius:20px; padding:36px 32px; min-width:240px;
+    box-shadow:0 12px 34px rgba(10,17,38,0.08); border:1px solid var(--line);
+  }
+  .kpi-tile .v{ font-family:var(--font-head); font-weight:800; font-size:80px; letter-spacing:-0.03em; line-height:1; color:var(--navy); }
+  .kpi-tile .l{ font-size:18px; color:var(--ink-3); font-weight:600; margin-top:10px; }
+  .kpi-tile .ic{ font-size:32px; margin-bottom:14px; }
+
+  /* GUBI vs Náš porovnávaci box */
+  .vs{ display:flex; gap:28px; }
+  .vs > div{ flex:1; }
+  .vs h3{ margin-bottom:18px; }
+
+  /* Flow mini visual */
+  .mini-flow{ display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+  .mini-step{
+    background:#fff; border:1.5px solid var(--line); border-radius:12px;
+    padding:16px 20px; font-size:18px; font-weight:700; color:var(--ink-1);
+    box-shadow:0 4px 12px rgba(10,17,38,0.04);
+    min-width:200px; text-align:center;
+  }
+  .mini-step .s{ font-size:14px; font-weight:500; color:var(--ink-3); display:block; margin-top:4px; }
+  .mini-step.start{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .mini-step.start .s{ color:rgba(255,255,255,0.7); }
+  .mini-step.end{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .mini-step.end .s{ color:rgba(255,255,255,0.85); }
+  .mini-arrow{ width:48px; height:24px; position:relative; flex-shrink:0; }
+  .mini-arrow::before{ content:''; position:absolute; left:0; right:8px; top:50%; height:0; border-top:2px solid var(--ink-3); }
+  .mini-arrow::after{ content:''; position:absolute; right:0; top:calc(50% - 6px); border-left:9px solid var(--ink-3); border-top:6px solid transparent; border-bottom:6px solid transparent; }
+
+</style>
+<script src="deck-stage.js"></script>
+</head>
+<body>
+
+<deck-stage>
+
+<!-- ────────────────────────────────────────────
+     Slide 1 · Hero
+     ──────────────────────────────────────────── -->
+<section data-screen-label="01 · Hero">
+  <div class="slide dark">
+    <!-- Pattern -->
+    <svg class="circles" width="1100" height="1100" style="top:-260px;right:-260px">
+      <circle cx="550" cy="550" r="520" fill="none" stroke="#fff" stroke-width="100"/>
+      <circle cx="700" cy="350" r="380" fill="none" stroke="#5DD3E8" stroke-width="70"/>
+      <circle cx="350" cy="700" r="280" fill="none" stroke="#8AB0FF" stroke-width="50"/>
+    </svg>
+
+    <div class="topbar">
+      <span class="tag">Hackathon 2026 · UX/UI Design</span>
+      <span class="sn">FPT · pre Kúpele Bardejov</span>
+    </div>
+
+    <div style="position:absolute; top:160px; left:110px; max-width:1500px;">
+      <div class="eyebrow" style="color:#5DD3E8; margin-bottom:24px; font-size:20px;">Front Office · Modul 2</div>
+      <div class="hero-display">
+        Recepcia,<br/>
+        <span class="a">ktorá nezdržuje</span><br/>
+        <span class="b">hosťa.</span>
+      </div>
+      <div style="font-size:24px; line-height:1.45; color:rgba(255,255,255,0.82); margin-top:36px; max-width:1100px;">
+        Nový hotelový systém pre Kúpele Bardejov — náhrada za GUBI Front Office.
+        Postavený okolo recepčného a kúpeľnej domény: ZP poukazy, 21-dňové pobyty,
+        autobusy seniorov, indikácie a hladké prepojenie s lekárom a procedúrami.
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>21. máj 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 2 · Problém (GUBI)
+     ──────────────────────────────────────────── -->
+<section data-screen-label="02 · Problém">
+  <div class="slide">
+    <div class="topbar">
+      <span class="tag">Problém</span>
+      <span class="sn">02 / 07</span>
+    </div>
+
+    <div style="margin-top:80px;">
+      <h2>Recepční nemajú radi <span style="color:var(--bad)">GUBI</span>.</h2>
+      <div class="lead" style="margin-top:24px; max-width:1300px;">
+        Klient (Kúpele Bardejov) je s aktuálnym front-office systémom GUBI dlhodobo nespokojný.
+        Tu je čo počujeme zo strany recepčných a manažmentu:
+      </div>
+    </div>
+
+    <div class="row gap-32" style="margin-top:64px;">
+      <div class="card grow" style="border-left:6px solid var(--bad);">
+        <div class="eyebrow" style="color:var(--bad);">Operatíva</div>
+        <ul class="bullets bad" style="margin-top:18px;">
+          <li>Príliš veľa klikov na bežné úkony (check-in, check-out)</li>
+          <li>Dôležité funkcie schované v podmenu</li>
+          <li>Ťažké upravovanie existujúcich rezervácií</li>
+          <li>Komplikované hľadanie dostupnosti pri skupinách</li>
+        </ul>
+      </div>
+      <div class="card grow" style="border-left:6px solid var(--warn);">
+        <div class="eyebrow" style="color:var(--warn);">UX & vizuál</div>
+        <ul class="bullets" style="margin-top:18px;">
+          <li>Zastaraný vizuál, malé písmo, neintuitívne ikony</li>
+          <li>Pomalé načítavanie pri ubytovacom procese</li>
+          <li>Zbytočne veľa povinných polí</li>
+          <li>Komplikovaná práca s platbami a depozitmi</li>
+        </ul>
+      </div>
+      <div class="card grow" style="border-left:6px solid var(--plum);">
+        <div class="eyebrow" style="color:var(--plum);">Spa špecifiká</div>
+        <ul class="bullets" style="margin-top:18px;">
+          <li>Chýba rýchly prehľad špec. požiadaviek hostí</li>
+          <li>Žiadny prehľad konfliktov pobyt × procedúry</li>
+          <li>Skupinové príchody bez paralelizácie</li>
+          <li>Slabá integrácia s lekárom a procedúrami</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>02 · Problém</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 3 · Kúpeľný kontext
+     ──────────────────────────────────────────── -->
+<section data-screen-label="03 · Kontext">
+  <div class="slide">
+    <svg class="circles" width="700" height="700" style="bottom:-200px;left:-200px">
+      <circle cx="350" cy="350" r="300" fill="none" stroke="#0F1F4D" stroke-width="50"/>
+      <circle cx="450" cy="280" r="220" fill="none" stroke="#2E5BFF" stroke-width="38"/>
+    </svg>
+
+    <div class="topbar">
+      <span class="tag">Kontext</span>
+      <span class="sn">03 / 07</span>
+    </div>
+
+    <div style="margin-top:80px;">
+      <h2>Kúpeľný front office <br/><span style="color:var(--blue)">nie je obyčajný hotel.</span></h2>
+      <div class="lead" style="margin-top:24px; max-width:1300px;">
+        Hosť je zároveň pacient. Pobyty trvajú týždne. Procedúry sú lekárska liečba.
+        Existujúce „univerzálne" PMS systémy túto doménu neriešia.
+      </div>
+    </div>
+
+    <div class="row gap-32" style="margin-top:72px;">
+      <div class="kpi-tile">
+        <div class="ic">⏱</div>
+        <div class="v">21 d</div>
+        <div class="l">Typický kúpeľný pobyt<br/>vs. 1.8 d hotel</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="ic">🚌</div>
+        <div class="v">32</div>
+        <div class="l">Hostí v jednom<br/>autobuse zo seniorklubu</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="ic">📋</div>
+        <div class="v">52%</div>
+        <div class="l">Pobytov cez ZP poukaz<br/>(VšZP, Dôvera, Union…)</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="ic">⚕</div>
+        <div class="v">3×</div>
+        <div class="l">Procedúr denne<br/>počas celého pobytu</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="ic">👴</div>
+        <div class="v">67</div>
+        <div class="l">Priemerný vek hosťa<br/>→ čitateľnosť UI je kritická</div>
+      </div>
+    </div>
+
+    <div style="margin-top:64px; padding:28px 32px; background:var(--cyan-soft); border-radius:18px; border-left:6px solid var(--cyan); max-width:1500px;">
+      <div style="font-size:22px; line-height:1.45; color:var(--ink-1);">
+        <b>Recepčný v Bardejove rieši</b>: poukazy, indikácie, kontraindikácie, diéty, špeciálne požiadavky,
+        skupinové príchody, harmonogramy procedúr, lekárske prehliadky, predĺženia kvôli liečbe — všetko v rámci
+        jedného front-office. <b>GUBI je stavané pre dovolenkový hotel.</b>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>03 · Kontext</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 4 · Princípy riešenia
+     ──────────────────────────────────────────── -->
+<section data-screen-label="04 · Princípy">
+  <div class="slide dark">
+    <svg class="circles" width="900" height="900" style="top:-200px;right:-200px">
+      <circle cx="450" cy="450" r="420" fill="none" stroke="#fff" stroke-width="90"/>
+      <circle cx="550" cy="300" r="280" fill="none" stroke="#5DD3E8" stroke-width="60"/>
+    </svg>
+
+    <div class="topbar">
+      <span class="tag" style="color:#5DD3E8;">7 princípov</span>
+      <span class="sn" style="color:rgba(255,255,255,0.6);">04 / 07</span>
+    </div>
+
+    <div style="margin-top:80px;">
+      <h2 style="max-width:1500px;">Náš nový front office<br/><span style="color:var(--cyan)">stojí na 7 princípoch.</span></h2>
+    </div>
+
+    <div style="margin-top:48px; display:grid; grid-template-columns:repeat(4, 1fr); gap:22px;">
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">01</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">One-screen flows</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Check-in pod 90 s. Doklady · izba · platba na jednej obrazovke.</div>
+      </div>
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">02</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;"><span class="mono" style="background:rgba(255,255,255,0.12); padding:2px 10px; border-radius:6px; font-size:20px;">⌘K</span> palette</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Hľadaj hosťa, izbu, akciu — 2 klávesami, kdekoľvek.</div>
+      </div>
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">03</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">Drag mriežka</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Zmena izby = ťahaj pás. Predĺženie = ťahaj okraj. Bez modálov.</div>
+      </div>
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">04</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">Spa kontext</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Dx, alergie, VIP, diéta, ZP — farebné tagy v každom pohľade.</div>
+      </div>
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">05</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">Skupinový paralel</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Dvaja recepční odbavujú autobus naraz, bez kolízií.</div>
+      </div>
+      <div class="card dark" style="padding:24px;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">06</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">Auto-konflikty</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">Procedúra po check-oute? Systém upozorní a navrhne riešenie.</div>
+      </div>
+      <div class="card dark" style="padding:24px; grid-column:span 2; border:1.5px solid #5DD3E8;">
+        <div style="font-size:16px; letter-spacing:0.18em; color:#5DD3E8; font-weight:700;">07 · FPT brand</div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:22px;margin-top:8px;letter-spacing:-0.01em;">Vizuál v jednote</div>
+        <div class="muted" style="margin-top:8px; font-size:16px; line-height:1.4;">FDX Navy, Maastricht, Blue, Cyan · Plus Jakarta + Inter — všetkých 5 modulov pôsobí ako jeden systém.</div>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>04 · Princípy</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 5 · User flow
+     ──────────────────────────────────────────── -->
+<section data-screen-label="05 · User flow">
+  <div class="slide">
+    <div class="topbar">
+      <span class="tag">User flow · Recepčný</span>
+      <span class="sn">05 / 07</span>
+    </div>
+
+    <div style="margin-top:64px;">
+      <h2>Príchod hosťa <span style="color:var(--blue)">v 7 krokoch.</span></h2>
+      <div class="lead" style="margin-top:18px;">Od pultu po izbu. Cieľ: pod 90 sekúnd. <span style="color:var(--ink-1); font-weight:600;">≤ 5 klikov.</span></div>
+    </div>
+
+    <!-- Mini flow -->
+    <div class="mini-flow" style="margin-top:64px; gap:0;">
+      <div class="mini-step start">Hosť pri pulte<span class="s">objednaný</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step"><span class="mono" style="background:var(--bg); padding:2px 8px; border-radius:5px; font-size:14px;">⌘K</span> hľadať<span class="s">meno / rezervácia</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step">Karta rezerv.<span class="s">jedným klikom</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step">Sken OP<span class="s">auto-fill</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step">Potvrď izbu<span class="s">+ upgrade?</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step">Podpis<span class="s">signpad</span></div>
+      <div class="mini-arrow"></div>
+      <div class="mini-step end">Kľúč + náramok<span class="s">hosť ide na izbu</span></div>
+    </div>
+
+    <!-- Side rails -->
+    <div class="row gap-32" style="margin-top:72px;">
+      <div class="card" style="flex:1; border-left:4px solid var(--navy);">
+        <div class="eyebrow" style="color:var(--navy);">Systém M2 · paralelne</div>
+        <div style="font-size:20px; line-height:1.4; color:var(--ink-2); margin-top:14px;">
+          Otvára folio · aktivuje izbu · zapisuje do audit logu ·
+          spočíta cenu po ZP · nastaví depozit
+        </div>
+      </div>
+      <div class="card" style="flex:1; border-left:4px solid var(--plum);">
+        <div class="eyebrow" style="color:var(--plum);">M4 · Lekár</div>
+        <div style="font-size:20px; line-height:1.4; color:var(--ink-2); margin-top:14px;">
+          Naplánuje vstupnú prehliadku na zajtra 9:00 ·
+          načíta indikácie · skontroluje kontraindikácie
+        </div>
+      </div>
+      <div class="card" style="flex:1; border-left:4px solid var(--cyan);">
+        <div class="eyebrow" style="color:#0E3640;">M5 + reštaurácia + HK</div>
+        <div style="font-size:20px; line-height:1.4; color:var(--ink-2); margin-top:14px;">
+          M5 pripraví harmonogram procedúr ·
+          reštaurácia dostane diétu D2 ·
+          HK vie, že izba je obsadená
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>05 · User flow</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 6 · Live demo
+     ──────────────────────────────────────────── -->
+<section data-screen-label="06 · Live demo">
+  <div class="slide dark">
+    <svg class="circles" width="800" height="800" style="bottom:-220px;left:-220px">
+      <circle cx="400" cy="400" r="360" fill="none" stroke="#5DD3E8" stroke-width="80"/>
+      <circle cx="450" cy="320" r="240" fill="none" stroke="#8AB0FF" stroke-width="50"/>
+    </svg>
+
+    <div class="topbar">
+      <span class="tag" style="color:#5DD3E8;">Live demo</span>
+      <span class="sn" style="color:rgba(255,255,255,0.6);">06 / 07</span>
+    </div>
+
+    <div style="margin-top:80px;">
+      <h2 style="color:#fff;">Ukážeme <span style="color:var(--cyan)">3 flow</span> naživo.</h2>
+      <div class="lead" style="margin-top:18px; color:rgba(255,255,255,0.8);">Klikateľný prototyp. Nie video. Nie obrázky. Reálna interakcia.</div>
+    </div>
+
+    <div class="row gap-24" style="margin-top:64px;">
+      <div class="card dark" style="flex:1;">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+          <div style="width:48px;height:48px;background:var(--blue);color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:22px;">1</div>
+          <div style="font-size:18px; letter-spacing:0.16em; color:#5DD3E8; font-weight:700; text-transform:uppercase;">Demo A · 60 s</div>
+        </div>
+        <h3 style="color:#fff;">Príchod hosťa</h3>
+        <div class="muted" style="margin-top:16px; font-size:18px; line-height:1.45;">
+          Dashboard → klik na meno hosťa v časovej osi → Check-in → „Dokončiť"
+          → návrat do mriežky s potvrdením.
+        </div>
+        <div style="margin-top:24px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.10);">
+          <div style="font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:8px;">Čo poukážeme</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:16px;">
+            <span>• Spa kontext (Dx, alergia, VIP) viditeľný</span>
+            <span>• 3 kroky v jednom okne</span>
+            <span>• Auto-link s M4 + M5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card dark" style="flex:1; border:1.5px solid var(--cyan);">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+          <div style="width:48px;height:48px;background:var(--cyan);color:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:22px;">2</div>
+          <div style="font-size:18px; letter-spacing:0.16em; color:#5DD3E8; font-weight:700; text-transform:uppercase;">Demo B · 45 s</div>
+        </div>
+        <h3 style="color:#fff;">Hľadanie cez <span class="mono" style="background:rgba(255,255,255,0.15); padding:2px 14px; border-radius:8px;">⌘K</span></h3>
+        <div class="muted" style="margin-top:16px; font-size:18px; line-height:1.45;">
+          Kdekoľvek stlačím ⌘K, napíšem „nov" → enter → otvorí profil hosťa.
+          Z palette aj vykonám akciu „Nová rezervácia pre Nováka".
+        </div>
+        <div style="margin-top:24px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.10);">
+          <div style="font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:8px;">Čo poukážeme</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:16px;">
+            <span>• Hľadá hostí · rezervácie · akcie</span>
+            <span>• Fungujúca klávesnica (↑↓↵)</span>
+            <span>• Žiadny modál, prepínanie 0 obrazoviek</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card dark" style="flex:1;">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+          <div style="width:48px;height:48px;background:var(--plum);color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:22px;">3</div>
+          <div style="font-size:18px; letter-spacing:0.16em; color:#5DD3E8; font-weight:700; text-transform:uppercase;">Demo C · 50 s</div>
+        </div>
+        <h3 style="color:#fff;">Konflikt s M5</h3>
+        <div class="muted" style="margin-top:16px; font-size:18px; line-height:1.45;">
+          Otvorím procedúry hosťa. Systém zachytil: dve procedúry po check-oute.
+          Jedným klikom predĺžim pobyt → konflikt vyriešený → toast potvrdí.
+        </div>
+        <div style="margin-top:24px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.10);">
+          <div style="font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:8px;">Čo poukážeme</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:16px;">
+            <span>• Inteligencia naprieč modulmi</span>
+            <span>• Konkrétne navrhované akcie</span>
+            <span>• Spa-špecifický prípad</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>06 · Live demo</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────
+     Slide 7 · Dopad + roadmap
+     ──────────────────────────────────────────── -->
+<section data-screen-label="07 · Dopad">
+  <div class="slide">
+    <div class="topbar">
+      <span class="tag">Dopad & roadmap</span>
+      <span class="sn">07 / 07</span>
+    </div>
+
+    <div style="margin-top:64px;">
+      <h2>Čo to klientovi prinesie.</h2>
+    </div>
+
+    <!-- Impact tiles -->
+    <div class="row gap-24" style="margin-top:52px;">
+      <div class="kpi-tile" style="flex:1; background:linear-gradient(135deg,#fff,#F5F7FB);">
+        <div class="ic">⏱</div>
+        <div class="v" style="color:var(--blue);">– 70%</div>
+        <div class="l">Čas check-inu<br/>≤ 90 s vs. 4–6 min v GUBI</div>
+      </div>
+      <div class="kpi-tile" style="flex:1; background:linear-gradient(135deg,#fff,#F5F7FB);">
+        <div class="ic">🖱</div>
+        <div class="v" style="color:var(--blue);">– 80%</div>
+        <div class="l">Klikov na bežné akcie<br/>5 vs. 25+ v GUBI</div>
+      </div>
+      <div class="kpi-tile" style="flex:1; background:linear-gradient(135deg,#fff,#F5F7FB);">
+        <div class="ic">⚠</div>
+        <div class="v" style="color:var(--ok);">– 90%</div>
+        <div class="l">Chýb pri skupinách<br/>(paralelný režim + manifest)</div>
+      </div>
+      <div class="kpi-tile" style="flex:1; background:linear-gradient(135deg,#fff,#F5F7FB);">
+        <div class="ic">🔍</div>
+        <div class="v" style="color:var(--plum);">2 klávesy</div>
+        <div class="l">Pre dosiahnutie akejkoľvek<br/>akcie cez ⌘K</div>
+      </div>
+    </div>
+
+    <!-- Roadmap timeline -->
+    <div style="margin-top:64px;">
+      <div class="eyebrow">Roadmap dizajnu po hackathone</div>
+      <div class="row" style="margin-top:24px; align-items:flex-start; gap:0; position:relative;">
+        <!-- timeline line -->
+        <div style="position:absolute; top:30px; left:0; right:0; height:3px; background:var(--line);"></div>
+
+        <div style="flex:1; padding-right:24px; position:relative;">
+          <div style="width:24px; height:24px; border-radius:99px; background:var(--blue); border:6px solid #fff; box-shadow:0 0 0 1.5px var(--blue); position:relative; z-index:1; margin-bottom:18px;"></div>
+          <div style="font-family:var(--font-head); font-weight:800; font-size:22px;">Týždne 1–2</div>
+          <div class="muted" style="font-size:16px; margin-top:6px;">User research, finalizácia hi-fi, design system v Figma.</div>
+        </div>
+        <div style="flex:1; padding-right:24px; position:relative;">
+          <div style="width:24px; height:24px; border-radius:99px; background:var(--blue); border:6px solid #fff; box-shadow:0 0 0 1.5px var(--blue); position:relative; z-index:1; margin-bottom:18px;"></div>
+          <div style="font-family:var(--font-head); font-weight:800; font-size:22px;">Týždne 3–6</div>
+          <div class="muted" style="font-size:16px; margin-top:6px;">Hi-fi mockupy všetkých 21 obrazoviek, interakčné stavy, usability testing.</div>
+        </div>
+        <div style="flex:1; padding-right:24px; position:relative;">
+          <div style="width:24px; height:24px; border-radius:99px; background:var(--cyan); border:6px solid #fff; box-shadow:0 0 0 1.5px var(--cyan); position:relative; z-index:1; margin-bottom:18px;"></div>
+          <div style="font-family:var(--font-head); font-weight:800; font-size:22px;">Týždne 7–9</div>
+          <div class="muted" style="font-size:16px; margin-top:6px;">Klikací prototyp + dev handoff. Začiatok implementácie.</div>
+        </div>
+        <div style="flex:1; position:relative;">
+          <div style="width:24px; height:24px; border-radius:99px; background:#fff; border:3px solid var(--ink-4); position:relative; z-index:1; margin-bottom:18px;"></div>
+          <div style="font-family:var(--font-head); font-weight:800; font-size:22px; color:var(--ink-3);">M3–M6</div>
+          <div class="muted" style="font-size:16px; margin-top:6px;">Návrh ďalších modulov v rovnakom systéme — M1/M3 rezervácie, M4 lekár, M5 procedúry.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing -->
+    <div style="margin-top:60px; padding:36px 48px; background:var(--navy); color:#fff; border-radius:18px; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div class="eyebrow" style="color:#5DD3E8;">Ďakujeme</div>
+        <div style="font-family:var(--font-head); font-weight:800; font-size:40px; letter-spacing:-0.02em; margin-top:8px;">Otázky?</div>
+      </div>
+      <div style="text-align:right; font-size:18px; color:rgba(255,255,255,0.75);">
+        Tím FPT · Hackathon 2026<br/>
+        <span style="color:#5DD3E8;">UX/UI dizajn — Kúpele Bardejov</span>
+      </div>
+    </div>
+
+    <div class="chrome">
+      <div class="brand"><div class="mark">kB</div><span>Kúpele Bardejov · Front Office</span></div>
+      <span>07 · Dopad &amp; roadmap</span>
+    </div>
+  </div>
+</section>
+
+</deck-stage>
+
+</body>
+</html>

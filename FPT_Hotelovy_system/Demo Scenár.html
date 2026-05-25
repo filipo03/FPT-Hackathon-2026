@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8"/>
+<title>Demo scénár · live cue card · Front Office</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F1F4D; --navy-2:#061230; --blue:#2E5BFF; --cyan:#5DD3E8;
+    --ink-1:#0A1126; --ink-2:#313752; --ink-3:#5C6481; --ink-4:#8B92AC;
+    --line:#E1E4EE; --bg:#F5F7FB;
+    --ok:#2FA76E; --warn:#E8930B; --bad:#DA3B33; --plum:#7857C7;
+  }
+  html,body{ margin:0; padding:0; background:#dde2ec; font-family:'Inter',sans-serif; color:var(--ink-1); }
+  .page{
+    max-width:1080px; margin:32px auto; background:#fff;
+    border-radius:20px; padding:64px 72px;
+    box-shadow:0 24px 60px rgba(10,17,38,0.10);
+  }
+  h1,h2,h3,h4{ font-family:'Plus Jakarta Sans',sans-serif; margin:0; letter-spacing:-0.02em; font-weight:700; line-height:1.15; }
+  h1{ font-size:48px; font-weight:800; }
+  h2{ font-size:30px; font-weight:800; }
+  h3{ font-size:22px; }
+  h4{ font-size:14px; text-transform:uppercase; letter-spacing:0.14em; font-weight:700; color:var(--blue); }
+  p{ line-height:1.55; color:var(--ink-2); }
+  .muted{ color:var(--ink-3); }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  .kbd{
+    display:inline-block; padding:1px 8px; background:#fff; border:1px solid var(--line);
+    border-radius:6px; font-family:'JetBrains Mono'; font-size:12.5px; font-weight:600; color:var(--ink-2);
+    box-shadow:0 1px 0 var(--line);
+  }
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; padding:3px 12px; border-radius:99px;
+    font-size:12.5px; font-weight:600; background:var(--bg); color:var(--ink-2);
+  }
+  .pill.navy{ background:var(--navy); color:#fff; }
+  .pill.cyan{ background:#D9F4FA; color:#0E3640; }
+  .pill.ok{ background:#DDF1E7; color:#1F6A47; }
+  .pill.warn{ background:#FBE8C9; color:#7A4B07; }
+  .pill.bad{ background:#FBE2DF; color:#7A1F1A; }
+  .pill.plum{ background:#ECE3F8; color:#3F2880; }
+
+  /* Header banner */
+  .banner{
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));
+    color:#fff; padding:32px 36px; border-radius:16px; margin-bottom:48px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:relative; overflow:hidden;
+  }
+  .banner::before{
+    content:''; position:absolute; right:-40px; top:-60px; width:300px; height:300px;
+    border-radius:50%; border:50px solid rgba(255,255,255,0.06); pointer-events:none;
+  }
+  .banner h1{ color:#fff; }
+  .banner .eyebrow{ font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:var(--cyan); font-weight:700; }
+  .banner .right{ text-align:right; font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6; }
+
+  /* Pre-demo */
+  .checklist{ background:var(--bg); border-radius:14px; padding:24px 28px; margin-bottom:48px; border-left:5px solid var(--blue); }
+  .checklist h3{ font-size:18px; text-transform:uppercase; letter-spacing:0.12em; color:var(--blue); margin-bottom:14px; }
+  .checklist ul{ list-style:none; padding:0; margin:0; columns:2; column-gap:32px; }
+  .checklist li{ font-size:14.5px; padding:6px 0 6px 28px; position:relative; break-inside:avoid; }
+  .checklist li::before{
+    content:''; position:absolute; left:0; top:9px; width:14px; height:14px; border:1.5px solid var(--ink-4); border-radius:3px;
+  }
+  .checklist li.done::before{ background:var(--ok); border-color:var(--ok); }
+  .checklist li.done::after{
+    content:''; position:absolute; left:3px; top:11px; width:8px; height:4px;
+    border-left:1.5px solid #fff; border-bottom:1.5px solid #fff; transform:rotate(-45deg);
+  }
+
+  /* Demo card */
+  .demo{
+    border:1.5px solid var(--line); border-radius:18px; padding:32px 36px; margin-bottom:36px;
+    position:relative;
+  }
+  .demo-head{ display:flex; align-items:center; gap:18px; margin-bottom:18px; flex-wrap:wrap; }
+  .demo-num{
+    width:56px; height:56px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Plus Jakarta Sans'; font-weight:800; font-size:26px; color:#fff;
+  }
+  .demo.a .demo-num{ background:var(--blue); }
+  .demo.b .demo-num{ background:var(--cyan); color:var(--navy); }
+  .demo.c .demo-num{ background:var(--plum); }
+  .demo .timing{ margin-left:auto; }
+  .demo h2 .sub{ font-weight:500; color:var(--ink-3); font-size:18px; margin-left:8px; }
+
+  .demo-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:24px; }
+  .col-block h4{ margin-bottom:14px; }
+  .steps{ list-style:none; padding:0; margin:0; counter-reset:step; display:flex; flex-direction:column; gap:14px; }
+  .steps li{
+    counter-increment:step;
+    position:relative; padding-left:42px; font-size:14.5px; line-height:1.45; color:var(--ink-2);
+  }
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:-2px;
+    width:30px; height:30px; border-radius:8px;
+    background:var(--bg); color:var(--navy);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Plus Jakarta Sans'; font-weight:800; font-size:14px;
+  }
+  .steps li b{ color:var(--ink-1); }
+  .steps li .said{
+    margin-top:6px; padding:10px 14px; background:linear-gradient(135deg,#FBE8C9 0%,#FFF8E8 100%);
+    border-left:3px solid var(--warn); border-radius:6px; font-size:13.5px; color:#3A2402;
+    font-style:italic; line-height:1.5;
+  }
+  .steps li .said::before{ content:'„'; font-weight:700; font-style:normal; }
+  .steps li .said::after{ content:'"'; font-weight:700; font-style:normal; }
+
+  .takeaway{ background:var(--navy); color:#fff; padding:20px 24px; border-radius:12px; margin-top:24px; }
+  .takeaway h4{ color:var(--cyan); margin-bottom:8px; }
+  .takeaway-items{ display:flex; flex-direction:column; gap:6px; font-size:14.5px; line-height:1.5; color:rgba(255,255,255,0.9); }
+
+  /* Fallback */
+  .fallback{
+    background:#FBE2DF; border:1px dashed var(--bad); border-radius:10px;
+    padding:14px 18px; margin-top:20px; font-size:13.5px; color:#7A1F1A;
+  }
+  .fallback b{ color:#7A1F1A; }
+
+  /* Closing */
+  .closing{
+    margin-top:48px; padding:36px 40px; background:linear-gradient(135deg,var(--cyan) 0%,#A0E5F2 100%);
+    border-radius:16px;
+  }
+  .closing h2{ color:#0E3640; }
+  .closing p{ color:#0E3640; font-size:17px; line-height:1.55; margin-top:12px; max-width:780px; }
+
+  @media print {
+    body{ background:#fff; }
+    .page{ box-shadow:none; margin:0; max-width:100%; padding:24px 32px; }
+    .demo{ page-break-inside:avoid; }
+    .banner::before{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Banner -->
+  <div class="banner">
+    <div>
+      <div class="eyebrow">Demo cue card · live</div>
+      <h1>Front Office<br/>Kúpele Bardejov</h1>
+      <div style="margin-top:8px; color:rgba(255,255,255,0.75); font-size:14.5px;">3 demo scenáre · ~3 minúty celkovo · presná kliknutia & talking points</div>
+    </div>
+    <div class="right">
+      <b style="color:#fff;">Hackathon 2026</b><br/>
+      Súbor: <span class="mono">Front Office Prototype.html</span><br/>
+      Cieľové rozlíšenie: <span class="mono">1440 × 900</span><br/>
+      Audio off · plné okno · Tweaks vpravo dole skry
+    </div>
+  </div>
+
+  <!-- Pre-demo checklist -->
+  <div class="checklist">
+    <h3>Pred demo · checklist</h3>
+    <ul>
+      <li class="done">Otvor súbor <span class="mono">Front Office Prototype.html</span> v Chrome / Edge</li>
+      <li class="done">Skontroluj, že si na obrazovke <b>Prehľad</b> (dashboard)</li>
+      <li class="done">Tweaks panel vpravo dole — preklikni si že je v <b>SK</b></li>
+      <li class="done">Pre istotu otvor/zavri <span class="kbd">⌘K</span> / <span class="kbd">Ctrl+K</span> raz aby si overil</li>
+      <li class="done">Pripoj displej · zoom prehliadača 100% · F11 fullscreen</li>
+      <li class="done">Help panel (otáznik vľavo dole) — zatvor pred demom</li>
+      <li class="done">Druhý monitor: <b>Pitch Deck</b> ako záloha</li>
+      <li class="done">Toast notifikácie sa zobrazia dolu — neignoruj ich, pomôžu narácii</li>
+    </ul>
+  </div>
+
+  <!-- DEMO A -->
+  <div class="demo a">
+    <div class="demo-head">
+      <div class="demo-num">1</div>
+      <div>
+        <h2>Príchod hosťa <span class="sub">— Ing. Jozef Novák · KKL · izba 203</span></h2>
+        <div style="margin-top:6px;">
+          <span class="pill ok">≤ 60 sekúnd</span>
+          <span class="pill">Dashboard → Check-in → Mriežka</span>
+        </div>
+      </div>
+      <div class="timing">
+        <span class="pill navy">⏱ 60 s</span>
+      </div>
+    </div>
+
+    <p style="margin:0; color:var(--ink-2); font-size:15px;">
+      <b>Príbeh:</b> Pán Novák práve dorazil. Recepčná ho má v dnešnom prehľade.
+      Nepotrebuje hľadať — vidí ho v časovej osi, jedným klikom otvorí check-in.
+    </p>
+
+    <div class="demo-grid">
+      <div class="col-block">
+        <h4>Akcie · čo klikať</h4>
+        <ol class="steps">
+          <li>
+            <b>Začni na Dashboarde</b> (default po načítaní).
+            Ukáž 5 KPI tiles hore — <span class="pill">18 príchodov</span> <span class="pill">87% obsadenosť</span>.
+            <div class="said">Toto recepčná vidí ráno o 6. Vie čo ju čaká.</div>
+          </li>
+          <li>
+            V časovej osi klikni na <b>„Ing. Jozef Novák +1"</b> (riadok 9:15, modrý pás).
+            <div class="said">Pán Novák práve prišiel. Klikám na jeho rezerváciu.</div>
+          </li>
+          <li>
+            Otvorí sa <b>Check-in</b> obrazovka. Ukáž zhora dole:<br/>
+            • Banner hosťa s tagmi <span class="pill bad">VIP</span> <span class="pill plum">Dx VI/3</span> <span class="pill warn">⚠ Penicilín</span><br/>
+            • <b>3 kroky v jednej obrazovke</b>: doklady · izba · platba<br/>
+            • Riadok integrácií dole (M4, M5, Reštaurácia, HK).
+            <div class="said">Všetko čo recepčná potrebuje — v jednom okne. Nie 5 záložkách.</div>
+          </li>
+          <li>
+            Klikni <b>„Dokončiť check-in"</b> (akcent tlačidlo vpravo hore).
+            <div class="said">Hotovo. Hosť dostane kľúč.</div>
+          </li>
+          <li>
+            Vráti sa do mriežky · dole zabliká toast <span class="pill ok">✓ Check-in dokončený · Novák · 203</span>.
+            <div class="said">Pán Novák je na izbe. Recepcia vidí, že je teraz „checked-in" v mriežke.</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="col-block">
+        <h4>Talking points · prečo je to lepšie</h4>
+        <ol class="steps" style="counter-reset:step;">
+          <li>
+            <b>Spa kontext je viditeľný hneď.</b> Recepčná pri prvom pohľade vie,
+            že hosť je VIP, má koxartrózu a alergiu na penicilín.
+            <div class="said">V GUBI by si musela kliknúť 3-krát do podmenu.</div>
+          </li>
+          <li>
+            <b>Žiadne medzimodaly.</b> Doklady, izba, platba — kompletná operatíva
+            na jednej obrazovke.
+          </li>
+          <li>
+            <b>Cena už je vypočítaná.</b> ZP poukaz hradí 1 470 € — recepčná to nemusí
+            počítať, ani odovzdávať papiere.
+          </li>
+          <li>
+            <b>Po dokončení sa automaticky stane veľa vecí:</b> M4 si naplánuje
+            zajtrajšiu prehliadku, M5 aktivuje 3 procedúry denne, reštaurácia dostane
+            D2 diétu, housekeeping vie že izba je obsadená.
+            <div class="said">Recepčná nemusí volať nikam. Systém to spraví za ňu.</div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <h4>↗ Záverečná veta tohto demo</h4>
+      <div class="takeaway-items">
+        <div>„90 sekúnd. 4 klávesy. Hosť na izbe. V GUBI to trvá 4–6 minút."</div>
+      </div>
+    </div>
+
+    <div class="fallback">
+      <b>Ak sa zasekne:</b> klikni v sidebare „Rezervácie" — dostane ťa do mriežky odkiaľ pokračuješ demom B.
+    </div>
+  </div>
+
+  <!-- DEMO B -->
+  <div class="demo b">
+    <div class="demo-head">
+      <div class="demo-num">2</div>
+      <div>
+        <h2><span class="mono kbd" style="font-size:18px;">⌘K</span> / <span class="mono kbd" style="font-size:18px;">Ctrl+K</span> Command palette <span class="sub">— globálne vyhľadávanie a akcie</span></h2>
+        <div style="margin-top:6px;">
+          <span class="pill ok">≤ 45 sekúnd</span>
+          <span class="pill">⌘K / Ctrl+K → search → enter → cieľová obrazovka</span>
+        </div>
+      </div>
+      <div class="timing">
+        <span class="pill cyan">⏱ 45 s</span>
+      </div>
+    </div>
+
+    <p style="margin:0; color:var(--ink-2); font-size:15px;">
+      <b>Príbeh:</b> Hosť zavolá: „Volám sa Novák, môžem zmeniť rezerváciu?"
+      Recepčná nepotrebuje vedieť, na ktorej obrazovke je. Stlačí <span class="kbd">⌘K</span> (Mac) alebo <span class="kbd">Ctrl+K</span> (Windows).
+    </p>
+
+    <div class="demo-grid">
+      <div class="col-block">
+        <h4>Akcie · čo klikať</h4>
+        <ol class="steps">
+          <li>
+            Si na ľubovoľnej obrazovke (najlepšie mriežka po demo A).
+            <b>Stlač <span class="kbd">⌘K</span></b> na Macu, <b><span class="kbd">Ctrl+K</span></b> na Windowse.
+            <div class="said">Toto je univerzálny vstup. Funguje kdekoľvek.</div>
+          </li>
+          <li>
+            Napíš <b>„nov"</b> (tri písmená).
+            <div class="said">Hľadám pána Nováka.</div>
+          </li>
+          <li>
+            Ukáž <b>3 sekcie výsledkov</b>: Hostia · Rezervácie · Akcie.
+            Vyhľadávanie spravilo <b>highlight</b> zhody „nov".
+            <div class="said">Hľadá v hostiach, rezerváciách aj v akciách — všetko naraz.</div>
+          </li>
+          <li>
+            Pohni sa šípkami <span class="kbd">↓</span> niekoľkokrát — výber sa mení s modrou vlnkou.
+            Vráť sa hore na prvého <b>„Ing. Jozef Novák"</b>.
+          </li>
+          <li>
+            Stlač <span class="kbd">↵</span> alebo klikni na výsledok.
+            <div class="said">Enter — otvorí profil hosťa.</div>
+          </li>
+          <li>
+            Otvorí sa <b>detail hosťa / pacienta</b>. Ukáž navy hero gradient, taby (8 pobytov, 12 faktúr),
+            zdravotný kontext z M4 vpravo.
+          </li>
+        </ol>
+      </div>
+
+      <div class="col-block">
+        <h4>Talking points · prečo je to lepšie</h4>
+        <ol class="steps" style="counter-reset:step;">
+          <li>
+            <b>2 klávesy = ľubovoľná akcia.</b> Recepčná nikdy nemusí brodiť menu.
+            <div class="said">GUBI má „funkcie schované v podmenu". My to riešime úplne inak.</div>
+          </li>
+          <li>
+            <b>Akcie sú prvotriedne.</b> „Nová rezervácia pre Nováka" je akcia, nie len výsledok hľadania.
+            Skratky <span class="kbd">⌘N</span> / <span class="kbd">Ctrl+N</span>, <span class="kbd">⌘⇧I</span> / <span class="kbd">Ctrl+Shift+I</span> sa dajú zapamätať.
+          </li>
+          <li>
+            <b>Kontextové dáta v 1 riadku.</b> Pri každom hosťovi vidíš hneď: VIP, počet pobytov, aktuálna izba.
+          </li>
+          <li>
+            <b>História pobytov ako prvý tab.</b> Pri opakovaných kúpeľníkoch je to zlato — vidíš
+            preferencie, NPS, predchádzajúce procedúry.
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <h4>↗ Záverečná veta tohto demo</h4>
+      <div class="takeaway-items">
+        <div>„Skús pre porovnanie nájsť toho istého hosťa v GUBI. Aspoň 8 klikov."</div>
+      </div>
+    </div>
+
+    <div class="fallback">
+      <b>Ak ⌘K / Ctrl+K nefunguje:</b> klikni do vyhľadávacieho poľa v topbare — má rovnaký efekt. Esc zatvorí palette.
+    </div>
+  </div>
+
+  <!-- DEMO C -->
+  <div class="demo c">
+    <div class="demo-head">
+      <div class="demo-num">3</div>
+      <div>
+        <h2>Konflikt s M5 <span class="sub">— procedúra po check-oute</span></h2>
+        <div style="margin-top:6px;">
+          <span class="pill ok">≤ 50 sekúnd</span>
+          <span class="pill">Sidebar → Procedúry → konflikt → predĺženie</span>
+        </div>
+      </div>
+      <div class="timing">
+        <span class="pill plum">⏱ 50 s</span>
+      </div>
+    </div>
+
+    <p style="margin:0; color:var(--ink-2); font-size:15px;">
+      <b>Príbeh:</b> Lekár upravil harmonogram. Dve procedúry sú teraz po check-oute hosťa.
+      Systém to zachytil sám. Recepčná to vyrieši jedným klikom.
+    </p>
+
+    <div class="demo-grid">
+      <div class="col-block">
+        <h4>Akcie · čo klikať</h4>
+        <ol class="steps">
+          <li>
+            V sidebare klikni <b>„Procedúry"</b> (ikona +).
+            <div class="said">Recepčná chce skontrolovať čo má pán Novák zajtra.</div>
+          </li>
+          <li>
+            Ukáž 5 KPI tiles hore — všimni si <span class="pill bad">Konflikty: 1</span>.
+            <div class="said">Tu — jeden konflikt. Systém to zachytil sám.</div>
+          </li>
+          <li>
+            Ukáž <b>21-dňový harmonogram</b> uprostred — magnet, masáž, inhalácia v rôznych časoch.
+            Farebné kódy zhora doprava ukazujú typ.
+          </li>
+          <li>
+            Vpravo dole je <b>červený panel „Konflikt · M5 ↔ Pobyt"</b>.<br/>
+            Prečítaj: „Slatinný zábal 11:00 a Magnetoterapia 13:00 — odchod hosťa naplánovaný 10:00."
+            <div class="said">Pán by mal odísť o desiatej, ale procedúry pokračujú. Klasický kúpeľný problém.</div>
+          </li>
+          <li>
+            Klikni <b>„Predĺžiť +1 noc · 89 €"</b>.
+            <div class="said">Najľahšie riešenie — predĺžime mu pobyt o noc.</div>
+          </li>
+          <li>
+            Vráti sa do mriežky · toast <span class="pill ok">✓ Pobyt predĺžený o 1 noc · +89 €</span>.
+          </li>
+        </ol>
+      </div>
+
+      <div class="col-block">
+        <h4>Talking points · prečo je to lepšie</h4>
+        <ol class="steps" style="counter-reset:step;">
+          <li>
+            <b>Inteligencia naprieč modulmi.</b> M5 (procedúry) a M2 (hotel) komunikujú.
+            <div class="said">V GUBI tieto systémy ani nehovoria spolu.</div>
+          </li>
+          <li>
+            <b>Konflikty sú detekované automaticky.</b> Recepčná nemusí porovnávať tabuľky — systém ich nájde.
+          </li>
+          <li>
+            <b>Riešenia ponúknuté.</b> Nie len upozornenie — konkrétne tlačidlá s cenou.
+            Recepčná sa rozhodne, nehľadá manuál.
+          </li>
+          <li>
+            <b>Spa-špecifické.</b> Tento konflikt nepoznáš v bežnom hoteli — pretože v hoteli žiadne procedúry nie sú.
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <h4>↗ Záverečná veta tohto demo</h4>
+      <div class="takeaway-items">
+        <div>„Systém nečaká, kým sa recepčná opýta. Sám zachytí čo môže ujsť."</div>
+      </div>
+    </div>
+
+    <div class="fallback">
+      <b>Ak konflikt nie je viditeľný:</b> nakliknuté „Otvoriť v M5" zobrazí len toast „Modul M5 — mimo rozsah".
+      Pokračuj s talking points aj bez kliknutia — diagram konfliktu hovorí za seba.
+    </div>
+  </div>
+
+  <!-- Closing -->
+  <div class="closing">
+    <h2>Záverečné slová do publika</h2>
+    <p>
+      „Postavili sme front office, ktorý <b>rešpektuje recepčného</b> — nezavadzia, nehádže prekážky,
+      neschováva dôležité veci. A zároveň rozumie tomu, že kúpele nie sú obyčajný hotel —
+      <b>hosť je pacient, pobyt je liečba</b>. To je rozdiel medzi GUBI a tým, čo sme ukázali. Ďakujeme."
+    </p>
+    <div style="margin-top:24px; display:flex; align-items:center; gap:12px;">
+      <span class="pill" style="background:#fff; color:var(--navy); font-weight:700;">Otvoriť ⌘K / Ctrl+K v publiku?</span>
+      <span style="font-size:13px; color:#0E3640;">Klávesa <span class="kbd">⌘K</span> / <span class="kbd">Ctrl+K</span> z publika môže vyvolať „wow" moment.</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

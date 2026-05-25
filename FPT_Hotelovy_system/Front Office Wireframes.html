@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8"/>
+<title>Front Office — Kúpele Bardejov · Wireframes v1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wf.css"/>
+<style>
+  /* Hide the design-canvas's default beige; we want our own */
+  body{ font-family:'Inter',sans-serif; }
+  /* canvas-level decoration */
+  .canvas-cover-title{
+    font-family:'Caveat',cursive; color:#0F1F4D;
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="wf-shared.jsx"></script>
+<script type="text/babel" src="wf-cover.jsx"></script>
+<script type="text/babel" src="wf-flows.jsx"></script>
+<script type="text/babel" src="wf-dashboard.jsx"></script>
+<script type="text/babel" src="wf-grid.jsx"></script>
+<script type="text/babel" src="wf-newres.jsx"></script>
+<script type="text/babel" src="wf-checkin.jsx"></script>
+<script type="text/babel" src="wf-checkout.jsx"></script>
+<script type="text/babel" src="wf-guest.jsx"></script>
+<script type="text/babel" src="wf-housekeeping.jsx"></script>
+<script type="text/babel" src="wf-procedures.jsx"></script>
+<script type="text/babel" src="wf-extras.jsx"></script>
+
+<script type="text/babel" data-presets="env,react">
+/* ── Tweaks (lang + density + vibe) ─────────────────────────── */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "lang": "sk",
+  "vibe": "structured",
+  "showAnnotations": true
+}/*EDITMODE-END*/;
+
+function TweaksUI(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  React.useEffect(() => {
+    window.WF_LANG = t.lang;
+    document.documentElement.classList.toggle('show-annotations', !!t.showAnnotations);
+    document.documentElement.classList.toggle('vibe-sketchy', t.vibe === 'sketchy');
+    window.dispatchEvent(new CustomEvent('wf-tweaks', { detail: t }));
+  }, [t.lang, t.vibe, t.showAnnotations]);
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="Jazyk · Language">
+        <TweakRadio
+          label="Jazyk"
+          value={t.lang}
+          onChange={v => setTweak('lang', v)}
+          options={[{value:'sk',label:'SK'},{value:'en',label:'EN'}]}
+        />
+      </TweakSection>
+      <TweakSection label="Vibe">
+        <TweakRadio
+          label="Štýl"
+          value={t.vibe}
+          onChange={v => setTweak('vibe', v)}
+          options={[{value:'structured',label:'Lo-fi navy'},{value:'sketchy',label:'Sketchy'}]}
+        />
+      </TweakSection>
+      <TweakSection label="Anotácie">
+        <TweakToggle label="Sticky notes" value={t.showAnnotations} onChange={v => setTweak('showAnnotations', v)}/>
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+/* ── Canvas root ────────────────────────────────────────────── */
+function App(){
+  const [bump, setBump] = React.useState(0);
+  React.useEffect(() => {
+    const f = () => setBump(b => b+1);
+    window.addEventListener('wf-tweaks', f);
+    return () => window.removeEventListener('wf-tweaks', f);
+  }, []);
+  return (
+    <>
+      <TweaksUI/>
+      <DesignCanvas key={bump}>
+        <DCSection id="cover" title="Front Office — Kúpele Bardejov" subtitle="Wireframes v1 · Recepčný · 21 artboards · SK/EN">
+          <DCArtboard id="cover" label="00 · Cover & legend" width={1100} height={700}>
+            <Cover/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="flows" title="01 · Sitemap & user flows" subtitle="Mapa modulu a tri kľúčové cesty recepčného">
+          <DCArtboard id="sitemap" label="Sitemap (IA)"          width={2200} height={900}><Sitemap/></DCArtboard>
+          <DCArtboard id="flow-arr" label="Flow · Príchod hosťa" width={2200} height={520}><FlowArrival/></DCArtboard>
+          <DCArtboard id="flow-grp" label="Flow · Skupina + autobus" width={2200} height={520}><FlowGroup/></DCArtboard>
+          <DCArtboard id="flow-ch"  label="Flow · Zmena rezervácie" width={2200} height={520}><FlowChange/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="dash" title="02 · Prehľad / Dashboard" subtitle="Tri prístupy: priebeh dňa, mriežka KPI, command-deck">
+          <DCArtboard id="dash-a" label="A · Priebeh dňa (timeline)" width={1280} height={820}><DashboardTimeline/></DCArtboard>
+          <DCArtboard id="dash-b" label="B · KPI grid + úlohy"       width={1280} height={820}><DashboardKPI/></DCArtboard>
+          <DCArtboard id="dash-c" label="C · Command deck"           width={1280} height={820}><DashboardCommand/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="grid" title="03 · Rezervačná mriežka" subtitle="Srdce systému — tri usporiadania pre kúpeľnú logiku">
+          <DCArtboard id="grid-a" label="A · Klasická šachovnica + drag"    width={1400} height={820}><GridClassic/></DCArtboard>
+          <DCArtboard id="grid-b" label="B · Týždne + skupinové pásy"        width={1400} height={820}><GridWeeks/></DCArtboard>
+          <DCArtboard id="grid-c" label="C · Pivot okolo dnešného dňa"       width={1400} height={820}><GridToday/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="newres" title="04 · Nová rezervácia" subtitle="Wizard, quick-create, skupinová">
+          <DCArtboard id="nr-a" label="A · Klasický wizard 4 kroky"   width={1280} height={820}><NewResWizard/></DCArtboard>
+          <DCArtboard id="nr-b" label="B · Quick-create (1 obrazovka)" width={1280} height={820}><NewResQuick/></DCArtboard>
+          <DCArtboard id="nr-c" label="C · Skupinová rezervácia (autobus)" width={1280} height={820}><NewResGroup/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="checkin" title="05 · Check-in" subtitle="Jednotlivec, skupina, lekárska prehliadka">
+          <DCArtboard id="ci-a" label="A · One-screen check-in" width={1280} height={820}><CheckinOne/></DCArtboard>
+          <DCArtboard id="ci-b" label="B · Skupinový check-in"   width={1280} height={820}><CheckinGroup/></DCArtboard>
+          <DCArtboard id="ci-c" label="C · Vstupná lekárska prehliadka — naviazanie" width={1280} height={820}><CheckinMed/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="checkout" title="06 · Check-out & Kasa" subtitle="Vyúčtovanie + platby + depozit">
+          <DCArtboard id="co-a" label="A · Check-out (jeden hosť)"    width={1280} height={820}><CheckoutSingle/></DCArtboard>
+          <DCArtboard id="co-b" label="B · Kasa / split-pay"          width={1280} height={820}><Cashier/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="detail" title="07 · Detail hosťa & rezervácie" subtitle="Hosť = pacient · indikácie, dokumenty, história">
+          <DCArtboard id="gd-a" label="A · Detail hosťa / pacienta"   width={1280} height={820}><GuestDetail/></DCArtboard>
+          <DCArtboard id="rd-a" label="B · Detail rezervácie"          width={1280} height={820}><ReservationDetail/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="house" title="08 · Izby & Housekeeping" subtitle="Stav, blok, údržba">
+          <DCArtboard id="hk-a" label="A · Plán izieb (housekeeping)" width={1280} height={820}><Housekeeping/></DCArtboard>
+          <DCArtboard id="hk-b" label="B · Stav izby — detail"          width={1280} height={820}><RoomDetail/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="proc" title="09 · Procedúry & lekár (väzba na M4/M5)" subtitle="Recepčný pohľad — bez plánovania, len kontext">
+          <DCArtboard id="pr-a" label="A · Harmonogram hosťa"           width={1280} height={820}><ProcSchedule/></DCArtboard>
+          <DCArtboard id="pr-b" label="B · Konflikt s check-outom"       width={1280} height={820}><ProcConflict/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="extras" title="10 · Reporty · Notifikácie · Vyhľadávanie" subtitle="Doplnkové, ale dôležité">
+          <DCArtboard id="rep-a" label="A · Reporty pre recepčného"      width={1280} height={820}><Reports/></DCArtboard>
+          <DCArtboard id="ta-a"  label="B · Úlohy & denník zmien"         width={1280} height={820}><TasksLog/></DCArtboard>
+          <DCArtboard id="srch"  label="C · Command palette (⌘K) — global search" width={1280} height={820}><CommandPalette/></DCArtboard>
+        </DCSection>
+
+      </DesignCanvas>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
